@@ -16,7 +16,8 @@ Autoscale = $Autoscale
     [[node defaults]]
     UsePublicNetwork = $UsePublicNetwork
     Credentials = $Credentials
-    SubnetId = $SubnetId
+    #SubnetId = $SubnetId
+    SubnetId = raps-poc-deployment-resources/raps-poc-deployment-network/raps-poc-deployment-subnet # ${rg}/${vnet}/${subnet}
     Region = $Region
     KeyPairLocation = ~/.ssh/cyclecloud.pem
 
@@ -253,7 +254,7 @@ Order = 10
         Label = HPC VM Type
         Description = The VM type for HPC execute nodes
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_HB120r-96s_v3
+        DefaultValue = Standard_HB120rs_v3
 
 
     [[parameters Auto-Scaling]]
@@ -306,14 +307,14 @@ Order = 10
         Config.MaxValue = 10000
         Config.IntegerOnly = true
 
-    [[parameters Networking]]
-    Order = 40
+    #[[parameters Networking]]
+    #Order = 40
 
-        [[[parameter SubnetId]]]
-        Label = Subnet ID
-        Description = Subnet Resource Path (ResourceGroup/VirtualNetwork/Subnet)
-        ParameterType = Azure.Subnet
-        Required = True
+        #[[[parameter SubnetId]]]
+        #Label = Subnet ID
+        #Description = Subnet Resource Path (ResourceGroup/VirtualNetwork/Subnet)
+        #ParameterType = Azure.Subnet
+        #Required = True
 
 [parameters Network Attached Storage]
 Order = 15
