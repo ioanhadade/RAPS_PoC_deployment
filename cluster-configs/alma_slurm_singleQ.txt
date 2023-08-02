@@ -15,21 +15,20 @@ Autoscale = $Autoscale
 
     [[node defaults]]
     UsePublicNetwork = $UsePublicNetwork
-    Credentials = $Credentials
-    #SubnetId = $SubnetId
-    SubnetId = raps-poc-deployment-resources/raps-poc-deployment-network/raps-poc-deployment-subnet # ${rg}/${vnet}/${subnet}
+    Credentials = $Credentials    
+    SubnetId = $SubnetId
     Region = $Region
     KeyPairLocation = ~/.ssh/cyclecloud.pem
 
     #These values correspond to the plan of the defult image, you will have to edit them if you change your image type
     ImagePlan.Publisher = almalinux
     ImagePlan.Product = almalinux-hpc
-    ImagePlan.Name = 8_6-hpc-gen2
+    ImagePlan.Name = 8_7-hpc-gen2
 
     #Install jetpack by default on all nodes
     #note, since Jetpack is already downloaded on this image, this command being set to true just runs an init script cyclecloud needs
     InstallJetpack = $GetJetpack
-
+    
     # Slurm autoscaling supports both Terminate and Deallocate shutdown policies
     ShutdownPolicy = $configuration_slurm_shutdown_policy
 
@@ -57,7 +56,7 @@ Autoscale = $Autoscale
         cyclecloud.exports.shared.disabled = true
         cyclecloud.exports.sched.samba.enabled = false
         cyclecloud.exports.shared.samba.enabled = false
-        cyclecloud.exports.defaults.samba.enabled = false
+        cyclecloud.exports.defaults.samba.enabled = false      
         cshared.server.legacy_links_disabled = true
 
         [[[cluster-init cyclecloud/slurm:default]]]
@@ -100,7 +99,7 @@ Autoscale = $Autoscale
     #             undefined,
     #             SchedulerHostName)),
     # "-")}
-
+    
         [[[configuration]]]
         cyclecloud.mounts.nfs_sched.disabled = true
         cyclecloud.mounts.nfs_shared.disabled = ${NFSType != "External"}
@@ -174,7 +173,7 @@ Autoscale = $Autoscale
     Abstract = true
         [[[configuration]]]
         slurm.autoscale = true
-
+        
         slurm.node_prefix = ${ifThenElse(NodeNamePrefix=="Cluster Prefix", StrJoin("-", ClusterName, ""), NodeNamePrefix)}
         slurm.use_nodename_as_hostname = $NodeNameIsHostname
 
@@ -307,14 +306,14 @@ Order = 10
         Config.MaxValue = 10000
         Config.IntegerOnly = true
 
-    #[[parameters Networking]]
-    #Order = 40
+    [[parameters Networking]]
+    Order = 40
 
-        #[[[parameter SubnetId]]]
-        #Label = Subnet ID
-        #Description = Subnet Resource Path (ResourceGroup/VirtualNetwork/Subnet)
-        #ParameterType = Azure.Subnet
-        #Required = True
+        [[[parameter SubnetId]]]
+        Label = Subnet ID
+        Description = Subnet Resource Path (ResourceGroup/VirtualNetwork/Subnet)
+        ParameterType = Azure.Subnet
+        Required = True
 
 [parameters Network Attached Storage]
 Order = 15
@@ -325,8 +324,8 @@ Order = 15
         [[[parameter About sched]]]
         HideLabel = true
         Config.Plugin = pico.widget.HtmlTemplateWidget
-        Config.Template = ''' <p>The directory <code>/sched</code> is a network attached mount and exists in all nodes of the cluster.
-            Slurm's configuration is linked in from this directory. It's managed by the scheduler node.
+        Config.Template = ''' <p>The directory <code>/sched</code> is a network attached mount and exists in all nodes of the cluster. 
+            Slurm's configuration is linked in from this directory. It's managed by the scheduler node. 
             To disable the mount of the /sched directory, and to supply your own for a <strong>hybrid scenario</strong>, select the checkbox below '''
         Order = 6
 
@@ -395,7 +394,7 @@ Order = 15
         Widget.Label = Add NFS mount
 
         [[[parameter AdditonalNFSAddress]]]
-        Label = NFS IP Address
+        Label = NFS IP Address 
         Description = The IP address or hostname of the NFS server. Also accepts a list comma-separated addresses, for example, to mount a frontend load-balanced Azure HPC Cache.
         Config.ParameterType = String
         Conditions.Excluded := AdditionalNAS isnt true
@@ -416,13 +415,13 @@ Order = 15
         Label = NFS Mount Options
         Description = NFS Client Mount Options
         Conditions.Excluded := AdditionalNAS isnt true
-
+    
 
 [parameters Advanced Settings]
 Order = 20
 
     [[parameters Azure Settings]]
-    Order = 10
+    Order = 10 
 
         [[[parameter Credentials]]]
         Description = The credentials for the cloud provider
@@ -439,8 +438,8 @@ Order = 20
         ParameterType = StringList
         Config.Plugin = pico.form.Dropdown
         Config.FreeForm = true
-        Config.Entries := {[Value="22.05.8-1"], [Value="20.11.9-1"]}
-        DefaultValue = 22.05.8-1
+        Config.Entries := {[Value="22.05.3-1"], [Value="20.11.9-1"]}
+        DefaultValue = 22.05.3-1
 
         [[[parameter configuration_slurm_accounting_enabled]]]
         Label = Job Accounting
@@ -463,7 +462,7 @@ Order = 20
         Description = Password for Slurm DBD admin
         ParameterType = Password
         Conditions.Excluded := configuration_slurm_accounting_enabled isnt true
-
+        
         [[[parameter configuration_slurm_shutdown_policy]]]
 	Label = ShutdownPolicy
         description = By default, autostop will Delete stopped VMS for lowest cost.  Optionally, Stop/Deallocate the VMs for faster restart instead.
@@ -486,7 +485,7 @@ Order = 20
         Description = Deploy Slurm with an additional HA node
         DefaultValue = false
         ParameterType = Boolean
-
+	
         [[[parameter configuration_slurm_launch_parameters]]]
         Label = Deploy Slurm with Launch Parameters
         Description = Deploy Slurm with Launch Parameters (comma delimited)
@@ -527,7 +526,7 @@ Order = 20
 
 	#[[[parameter HPCImageID]]]
 	#label = HPC Image ID
-	#Description = An ID for a custom image.
+	#Description = An ID for a custom image. 
 	#Config.OS = linux
 	#DefaultValue = "/subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/myPackerImage"
 
@@ -559,13 +558,13 @@ Order = 20
         DefaultValue = =undefined
         Description = Cluster init specs to apply to the scheduler node
         ParameterType = Cloud.ClusterInitSpecs
-
+    
         [[[parameter HTCClusterInitSpecs]]]
         Label = HTC Cluster-Init
         DefaultValue = =undefined
         Description = Cluster init specs to apply to HTC execute nodes
         ParameterType = Cloud.ClusterInitSpecs
-
+        
         [[[parameter HPCClusterInitSpecs]]]
         Label = HPC Cluster-Init
         DefaultValue = =undefined
@@ -577,7 +576,7 @@ Order = 20
         Description = Install jetpack on all nodes when they're provisioned, if jetpack is pre-installed it will run a necessary initalisation script instead
         DefaultValue = true
         ParameterType = Boolean
-
+	
 
     [[parameters Advanced Networking]]
     Description = Advanced networking settings
@@ -600,4 +599,4 @@ Order = 20
         ParameterType = Boolean
         Config.Label = Access execute nodes from the Internet
         Conditions.Excluded := UsePublicNetwork isnt true
-
+    
