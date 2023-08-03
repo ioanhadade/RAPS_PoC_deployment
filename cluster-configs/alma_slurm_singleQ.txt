@@ -19,7 +19,8 @@ Autoscale = $Autoscale
     #SubnetId = $SubnetId
     SubnetId = raps-poc-deployment-resources/raps-poc-deployment-network/raps-poc-deployment-subnet # ${rg}/${vnet}/${subnet}
     Region = $Region
-    KeyPairLocation = ~/.ssh/cc_key
+    #KeyPairLocation = ~/RAPS_PoC_deployment/.ssh/cc_key
+    KeyPairLocation = ~/.ssh/cyclecloud.pem
 
     #These values correspond to the plan of the defult image, you will have to edit them if you change your image type
     ImagePlan.Publisher = almalinux
