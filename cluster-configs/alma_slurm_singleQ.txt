@@ -255,7 +255,7 @@ Order = 10
         Label = HPC VM Type
         Description = The VM type for HPC execute nodes
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_HB120rs_v3
+        DefaultValue = Standard_HB120-96rs_v3
 
 
     [[parameters Auto-Scaling]]
