@@ -184,24 +184,23 @@ Autoscale = $Autoscale
         [[[network-interface eth0]]]
         AssociatePublicIpAddress = $ExecuteNodesPublic
 
-        [[nodearray ondemand]]
+        [[nodearray hbv3]]
         Extends = nodearraybase
-        MachineType = $HPCMachineType
+        MachineType = Standard_HB120-96rs_v3
         #cant i just put this in nodearraybase as a variable since its constant across all queues
         ImageID = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/almaPackerImage
         MaxCount = $MaxNodes
         Azure.MaxScalesetSize = $HPCMaxScalesetSize
         AdditionalClusterInitSpecs = $HPCClusterInitSpecs
 
-
 		[[[configuration]]]
 		slurm.hpc = true
-		slurm.partition = ondemand
+		slurm.partition = hbv3
 		slurm.use_pcpu = false
 
-        [[nodearray spot]]
+        [[nodearray hbv2]]
         Extends = nodearraybase
-        MachineType = $HPCMachineType
+        MachineType = Standard_HB120rs_v2
         #cant i just put this in nodearraybase as a variable since its constant across all queues
         ImageID = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/almaPackerImage
         MaxCount = $MaxNodes
@@ -213,8 +212,7 @@ Autoscale = $Autoscale
 		[[[configuration]]]
 		slurm.default_partition = true
 		slurm.hpc = true
-		slurm.partition = spot
-		# set pcpu = false for all hyperthreaded VMs
+		slurm.partition = hbv2
 		slurm.use_pcpu = false
 
 [parameters About]
