@@ -192,6 +192,8 @@ Autoscale = $Autoscale
         MaxCount = $MaxNodes
         Azure.MaxScalesetSize = $HPCMaxScalesetSize
         AdditionalClusterInitSpecs = $HPCClusterInitSpecs
+        Interruptible = true
+        MaxPrice = $SpotMaxPrice
 
 		[[[configuration]]]
 		slurm.hpc = true
