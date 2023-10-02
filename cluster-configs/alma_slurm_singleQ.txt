@@ -87,7 +87,7 @@ Autoscale = $Autoscale
     [[node scheduler]]
     MachineType = $SchedulerMachineType
     #ImageName = $SchedulerImageName
-    ImageID = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/almaPackerImage #$HPCImageID
+    ImageID = $ImageID
     Interruptible = $LoginUseLowPrio
     MaxPrice = $SpotMaxPrice
     IsReturnProxy = $ReturnProxy
@@ -161,7 +161,7 @@ Autoscale = $Autoscale
         InitialCount = $NumberLoginNodes
         MachineType = $loginMachineType
         #ImageName = $SchedulerImageName
-        ImageID = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/almaPackerImage
+        ImageID = $ImageID
     	Interruptible = $LoginUseLowPrio
     	MaxPrice = $SpotMaxPrice
 
@@ -188,23 +188,7 @@ Autoscale = $Autoscale
         Extends = nodearraybase
         MachineType = Standard_HB120-96rs_v3
         #cant i just put this in nodearraybase as a variable since its constant across all queues
-        ImageID = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/almaPackerImage
-        MaxCount = $MaxNodes
-        Azure.MaxScalesetSize = $HPCMaxScalesetSize
-        AdditionalClusterInitSpecs = $HPCClusterInitSpecs
-        Interruptible = true
-        MaxPrice = $SpotMaxPrice
-
-		[[[configuration]]]
-		slurm.hpc = true
-		slurm.partition = hbv3
-		slurm.use_pcpu = false
-
-        [[nodearray hbv2]]
-        Extends = nodearraybase
-        MachineType = Standard_HB120rs_v2
-        #cant i just put this in nodearraybase as a variable since its constant across all queues
-        ImageID = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/almaPackerImage
+        ImageID = $ImageID
         MaxCount = $MaxNodes
         Azure.MaxScalesetSize = $HPCMaxScalesetSize
         AdditionalClusterInitSpecs = $HPCClusterInitSpecs
@@ -214,8 +198,68 @@ Autoscale = $Autoscale
 		[[[configuration]]]
 		slurm.default_partition = true
 		slurm.hpc = true
+		slurm.partition = hbv3
+		slurm.use_pcpu = false
+
+        [[nodearray hbv3od]]
+        Extends = nodearraybase
+        MachineType = Standard_HB120-96rs_v3
+        #cant i just put this in nodearraybase as a variable since its constant across all queues
+        ImageID = $ImageID
+        MaxCount = $MaxNodes
+        Azure.MaxScalesetSize = $HPCMaxScalesetSize
+        AdditionalClusterInitSpecs = $HPCClusterInitSpecs
+
+                [[[configuration]]]
+                slurm.hpc = true
+                slurm.partition = hbv3od
+                slurm.use_pcpu = false
+
+        [[nodearray hbv2]]
+        Extends = nodearraybase
+        MachineType = Standard_HB120rs_v2
+        #cant i just put this in nodearraybase as a variable since its constant across all queues
+        ImageID = $ImageID
+        MaxCount = $MaxNodes
+        Azure.MaxScalesetSize = $HPCMaxScalesetSize
+        AdditionalClusterInitSpecs = $HPCClusterInitSpecs
+        Interruptible = true
+        MaxPrice = $SpotMaxPrice
+
+		[[[configuration]]]
+		slurm.hpc = true
 		slurm.partition = hbv2
 		slurm.use_pcpu = false
+
+        [[nodearray hbv2od]]
+        Extends = nodearraybase
+        MachineType = Standard_HB120rs_v2
+        #cant i just put this in nodearraybase as a variable since its constant across all queues
+        ImageID = $ImageID
+        MaxCount = $MaxNodes
+        Azure.MaxScalesetSize = $HPCMaxScalesetSize
+        AdditionalClusterInitSpecs = $HPCClusterInitSpecs
+
+                [[[configuration]]]
+                slurm.hpc = true
+                slurm.partition = hbv2od
+                slurm.use_pcpu = false
+
+        [[nodearray hbv4]]
+        Extends = nodearraybase
+        MachineType = Standard_HB176rs_v4
+        #cant i just put this in nodearraybase as a variable since its constant across all queues
+        ImageID = $ImageID
+        MaxCount = 1 #IB issues means no point running more then 1 node
+        Azure.MaxScalesetSize = $HPCMaxScalesetSize
+        AdditionalClusterInitSpecs = $HPCClusterInitSpecs
+        Interruptible = true
+        MaxPrice = $SpotMaxPrice
+
+                [[[configuration]]]
+                slurm.hpc = true
+                slurm.partition = hbv4
+                slurm.use_pcpu = false
 
 [parameters About]
 Order = 1
@@ -271,7 +315,7 @@ Order = 10
 	[[[parameter MaxNodes]]]
 	label = Max HPC Nodes
 	Description = The number of HPC cores to start
-        DefaultValue = 10
+        DefaultValue = 32
         Config.Plugin = pico.form.NumberTextBox
         Config.MinValue = 1
         Config.IntegerOnly = true
@@ -308,14 +352,14 @@ Order = 10
         Config.MaxValue = 10000
         Config.IntegerOnly = true
 
-    #[[parameters Networking]]
-    #Order = 40
+    [[parameters Networking]]
+    Order = 40
 
-        #[[[parameter SubnetId]]]
-        #Label = Subnet ID
-        #Description = Subnet Resource Path (ResourceGroup/VirtualNetwork/Subnet)
-        #ParameterType = Azure.Subnet
-        #Required = True
+        [[[parameter SubnetId]]]
+        Label = Subnet ID
+        Description = Subnet Resource Path (ResourceGroup/VirtualNetwork/Subnet)
+        ParameterType = Azure.Subnet
+        Required = True
 
 [parameters Network Attached Storage]
 Order = 15
@@ -440,8 +484,9 @@ Order = 20
         ParameterType = StringList
         Config.Plugin = pico.form.Dropdown
         Config.FreeForm = true
-        Config.Entries := {[Value="22.05.8-1"], [Value="20.11.9-1"]}
-        DefaultValue = 22.05.8-1
+        Config.Entries := {[Value="22.05.8-1"], [Value="20.11.9-1"], [Value="23.02.0-1"]}
+        #DefaultValue = 22.05.8-1
+        DefaultValue = 23.02.0-1
 
         [[[parameter configuration_slurm_accounting_enabled]]]
         Label = Job Accounting
@@ -526,11 +571,12 @@ Order = 20
         Config.Entries := {[Value="Generated"], [Value="Cluster Prefix"]}
         Conditions.Hidden := NodeNameIsHostname != true
 
-	#[[[parameter HPCImageID]]]
-	#label = HPC Image ID
-	#Description = An ID for a custom image.
-	#Config.OS = linux
-	#DefaultValue = "/subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/myPackerImage"
+	[[[parameter ImageID]]]
+	label = Image ID
+	Description = An ID for a custom image.
+	Config.OS = linux
+	DefaultValue = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/provid
+ers/Microsoft.Compute/images/almaPackerImage
 
 
 	#Replacing these with image ID above
