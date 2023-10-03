@@ -247,10 +247,10 @@ Autoscale = $Autoscale
 
         [[nodearray hbv4]]
         Extends = nodearraybase
-        MachineType = Standard_HB176rs_v4
+        MachineType = Standard_HB176-144rs_v4
         #cant i just put this in nodearraybase as a variable since its constant across all queues
         ImageID = $ImageID
-        MaxCount = 1 #IB issues means no point running more then 1 node
+        MaxCount = 10
         Azure.MaxScalesetSize = $HPCMaxScalesetSize
         AdditionalClusterInitSpecs = $HPCClusterInitSpecs
         Interruptible = true
