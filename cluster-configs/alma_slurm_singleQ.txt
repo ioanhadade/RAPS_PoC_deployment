@@ -575,8 +575,7 @@ Order = 20
 	label = Image ID
 	Description = An ID for a custom image.
 	Config.OS = linux
-	DefaultValue = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/provid
-ers/Microsoft.Compute/images/almaPackerImage
+	DefaultValue = /subscriptions/1ebf8a1b-0e8d-4f86-ba56-5fde937545f5/resourceGroups/packer_image_rg/providers/Microsoft.Compute/images/almaPackerImage
 
 
 	#Replacing these with image ID above
